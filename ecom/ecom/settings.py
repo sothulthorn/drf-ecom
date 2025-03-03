@@ -13,6 +13,17 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+import environ
+
+# Load environment variables from .env
+env = environ.Env()
+environ.Env.read_env()
+
+# Now you can access the variables
+MERCHANT_ID = env('MERCHANT_ID')
+PUBLIC_KEY = env('PUBLIC_KEY')
+PRIVATE_KEY = env('PRIVATE_KEY')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -46,6 +57,7 @@ INSTALLED_APPS = [
     'api.product',
     'api.user',
     'api.order',
+    'api.payment',
 ]
 
 MIDDLEWARE = [

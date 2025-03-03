@@ -8,5 +8,7 @@ django = "==5.1.6"
 django-cors-headers = "*"
 djangorestframework = "*"
 pillow = "*"
+braintree = "*"
+django-environ = "*"
 
 [dev-packages]
