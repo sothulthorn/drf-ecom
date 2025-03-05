@@ -26,8 +26,7 @@ const Signin = () => {
     signin({ email, password })
       .then((data) => {
         if (data.token) {
-          let sessionToken = data.token;
-          authenticate(sessionToken, () => {
+          authenticate(data, () => {
             console.log('TOKKEN ADDED');
             setValues({
               ...values,
