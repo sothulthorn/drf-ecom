@@ -1,36 +1,33 @@
-import React from 'react';
-import { Redirect } from 'react-router-dom';
-
+import React, { useState } from 'react';
 import ImageHelper from './helper/imageHelper';
+import { Redirect } from 'react-router-dom';
 import { addItemToCart, removeItemFromCart } from './helper/cartHelper';
+import { isAuthenticated } from '../auth/helper';
 
-// TODO: Deal with this later
-const isAuthenticated = true;
+const Card = ({
+  product,
+  addtoCart = true,
+  removeFromCart = false,
+  reload = undefined,
+  setReload = (f) => f,
+  // function(f){return f}
+}) => {
+  const [redirect, setRedirect] = useState(false);
 
-const Card = ({ product, addToCart = true, removeFromCart = false }) => {
   const cartTitle = product ? product.name : 'A photo from pexels';
   const cartDescription = product ? product.description : 'Default description';
   const cartPrice = product ? product.price : 'Default';
 
-  const handleAddToCart = () => {
-    if (isAuthenticated) {
-      addItemToCart(product, () => {});
+  const addToCart = () => {
+    if (isAuthenticated()) {
+      addItemToCart(product, () => setRedirect(true));
       console.log('Added to cart');
     } else {
-      console.log('Login please!');
+      console.log('Login Please!');
     }
   };
 
-  const handleRemoveFromCart = () => {
-    if (isAuthenticated) {
-      removeItemFromCart(product.id);
-      console.log('Removed from cart');
-    } else {
-      console.log('Login please!');
-    }
-  };
-
-  const getARedirect = (redirect) => {
+  const getAredirect = (redirect) => {
     if (redirect) {
       return <Redirect to="/cart" />;
     }
@@ -38,9 +35,9 @@ const Card = ({ product, addToCart = true, removeFromCart = false }) => {
 
   const showAddToCart = (addToCart) => {
     return (
-      addToCart && (
+      addtoCart && (
         <button
-          onClick={handleAddToCart}
+          onClick={addToCart}
           className="btn btn-block btn-outline-success mt-2 mb-2"
         >
           Add to Cart
@@ -53,7 +50,13 @@ const Card = ({ product, addToCart = true, removeFromCart = false }) => {
     return (
       removeFromCart && (
         <button
-          onClick={handleRemoveFromCart}
+          onClick={() => {
+            //TODO: handle this too
+            removeItemFromCart(product.id);
+            setReload(!reload);
+
+            console.log('Product removed from cart');
+          }}
           className="btn btn-block btn-outline-danger mt-2 mb-2"
         >
           Remove from cart
@@ -66,8 +69,9 @@ const Card = ({ product, addToCart = true, removeFromCart = false }) => {
     <div className="card text-white bg-dark border border-info ">
       <div className="card-header lead">{cartTitle}</div>
       <div className="card-body">
+        {getAredirect(redirect)}
         <ImageHelper product={product} />
-        <p className="lead bg-success font-weight-normal text-wrap mt-2 mb-2">
+        <p className="lead bg-success font-weight-normal text-wrap">
           {cartDescription}
         </p>
         <p className="btn btn-success rounded  btn-sm px-4">$ {cartPrice}</p>
